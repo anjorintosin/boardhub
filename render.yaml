@@ -1,0 +1,39 @@
+services:
+  - type: web
+    name: boardhub-backend
+    env: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: JWT_SECRET
+        generateValue: true
+      - key: JWT_EXPIRES_IN
+        value: 7d
+      - key: JWT_COOKIE_EXPIRES_IN
+        value: 7
+      - key: SESSION_COOKIE_HTTPONLY
+        value: true
+      - key: SESSION_COOKIE_SECURE
+        value: true
+      - key: CORS_ORIGIN
+        value: https://your-frontend-domain.com
+      - key: CORS_CREDENTIALS
+        value: true
+      - key: RATE_LIMIT_WINDOW_MS
+        value: 900000
+      - key: RATE_LIMIT_MAX_REQUESTS
+        value: 100
+      - key: BCRYPT_ROUNDS
+        value: 12
+    healthCheckPath: /health
+
+databases:
+  - name: boardhub-db
+    databaseName: boardhub
+    user: boardhub_user
+    plan: free 
