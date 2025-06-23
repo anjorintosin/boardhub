@@ -156,7 +156,14 @@ router.get('/board/:boardId', [
     }
 
     const lists = await List.find({ board: boardId, isArchived: false })
-      .populate('cards', 'title description order color labels assignees dueDate isCompleted priority')
+      .populate({
+        path: 'cards',
+        select: 'title description order color labels assignees dueDate isCompleted priority',
+        populate: {
+          path: 'assignees',
+          select: 'name email avatar'
+        }
+      })
       .populate('createdBy', 'name email avatar')
       .sort({ order: 1 });
 
@@ -170,7 +177,7 @@ router.get('/board/:boardId', [
       }
     });
   } catch (error) {
-    logger.error('Get lists failed:', error);
+    logger.error('Get lists failed: ' + (error && (error.stack || error.message || JSON.stringify(error))));
     res.status(500).json({
       success: false,
       message: 'Failed to get lists'
@@ -241,7 +248,14 @@ router.get('/:id', [
 ], validate, protect, checkListAccess, async (req, res) => {
   try {
     const list = await List.findById(req.params.id)
-      .populate('cards', 'title description order color labels assignees dueDate isCompleted priority')
+      .populate({
+        path: 'cards',
+        select: 'title description order color labels assignees dueDate isCompleted priority',
+        populate: {
+          path: 'assignees',
+          select: 'name email avatar'
+        }
+      })
       .populate('createdBy', 'name email avatar')
       .populate('board', 'title description');
 

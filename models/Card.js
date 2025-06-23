@@ -174,20 +174,20 @@ const cardSchema = new mongoose.Schema({
 
 // Virtual for vote count
 cardSchema.virtual('voteCount').get(function() {
-  return this.votes.reduce((sum, vote) => sum + vote.value, 0);
+  return (this.votes || []).reduce((sum, vote) => sum + vote.value, 0);
 });
 
 // Virtual for completed checklist items count
 cardSchema.virtual('completedChecklistItems').get(function() {
-  return this.checklists.reduce((sum, checklist) => 
-    sum + checklist.items.filter(item => item.isCompleted).length, 0
+  return (this.checklists || []).reduce((sum, checklist) => 
+    sum + (checklist.items || []).filter(item => item.isCompleted).length, 0
   );
 });
 
 // Virtual for total checklist items count
 cardSchema.virtual('totalChecklistItems').get(function() {
-  return this.checklists.reduce((sum, checklist) => 
-    sum + checklist.items.length, 0
+  return (this.checklists || []).reduce((sum, checklist) => 
+    sum + (checklist.items || []).length, 0
   );
 });
 

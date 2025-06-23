@@ -188,7 +188,13 @@ router.get('/', [
     // Get boards with pagination
     const boards = await Board.find(query)
       .populate('owner', 'name email avatar')
-      .populate('members.user', 'name email avatar')
+      .populate({
+        path: 'members',
+        populate: {
+          path: 'user',
+          select: 'name email avatar'
+        }
+      })
       .sort({ [sort]: order === 'desc' ? -1 : 1 })
       .skip(skip)
       .limit(limit);
@@ -457,7 +463,13 @@ router.get('/:id', [
   try {
     const board = await Board.findById(req.params.id)
       .populate('owner', 'name email avatar')
-      .populate('members.user', 'name email avatar')
+      .populate({
+        path: 'members',
+        populate: {
+          path: 'user',
+          select: 'name email avatar'
+        }
+      })
       .populate({
         path: 'lists',
         populate: {
